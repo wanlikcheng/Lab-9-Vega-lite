@@ -1,0 +1,103 @@
+<!-- Author: Wanli (Kelvin) Cheng
+    Class: Visualization
+    Assignment: Lab 8 -->
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Milligram CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+
+    <!-- You CSS rules-->
+    <link rel="stylesheet" href="style.css" />
+    
+    <!-- Load Javascript files -->
+    <!-- <script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.1.1/d3.min.js"></script> -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- Your code -->
+    <script defer src="script.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.18.2"></script>
+
+    <style media="screen">
+        /* Add space between Vega-Embed links  */
+        .vega-actions a {
+            margin-right: 5px;
+        }
+    </style>
+    </head>
+    <body>
+        <h1>Vega-lite COVID-19 Dashboard</h1>
+        <!-- Container for the visualization -->
+        <div id="vis"></div>
+
+        <script>
+        // Assign the specification to a local variable vlSpec.
+        var vlSpec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "description": "Wanli Cheng - Lab 9.",
+            "data": {
+                "url": "https://raw.githubusercontent.com/bcviscourse/datasets/master/lab9-covidtracking.csv"
+            },
+            "vconcat": [
+                {
+                "width": 500,
+                "height": 150,
+                "mark": {"type": "circle", "tooltip": true},
+                "encoding": {
+                    "x": {
+                    "field": "positive",
+                    "type": "quantitative",
+                    "scale": {"zero": false}
+                    },
+                    "y": {
+                    "field": "death",
+                    "type": "quantitative",
+                    "scale": {"zero": false}
+                    },
+                    "color": {"field": "dataQualityGrade", "type": "nominal"}
+                },
+                "params": [{
+                    "name":"brush",
+                    "select": {"type": "interval"}
+                }]
+                },
+                {
+                "repeat": ["hospitalizedCumulative", "recovered"],
+                "columns": 1,
+                "spec": {
+                    "width": 500,
+                    "height": 75,
+                    "mark": "bar",
+                    "encoding": {
+                    "x": {"field": "state", "type": "nominal"},
+                    "y": {
+                        "field": {"repeat": "repeat"},
+                        "type": "quantitative",
+                        "axis": {"tickCount": 5}
+                    }
+                    },
+                    "transform": [{
+                    "filter":{"param":"brush"}
+                    }]
+                }
+                }
+            ],
+            "config": {}
+        };
+
+        // Embed the visualization in the container with id `vis`
+        vegaEmbed('#vis', vlSpec);
+        </script>
+    </body>
+</html>

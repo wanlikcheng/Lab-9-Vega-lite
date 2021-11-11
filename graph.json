@@ -1,0 +1,52 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Wanli Cheng - Lab 9.",
+  "data": {
+    "url": "https://raw.githubusercontent.com/bcviscourse/datasets/master/lab9-covidtracking.csv"
+  },
+  "vconcat": [
+    {
+      "width": 500,
+      "height": 150,
+      "mark": {"type": "circle", "tooltip": true},
+      "encoding": {
+        "x": {
+          "field": "positive",
+          "type": "quantitative",
+          "scale": {"zero": false}
+        },
+        "y": {
+          "field": "death",
+          "type": "quantitative",
+          "scale": {"zero": false}
+        },
+        "color": {"field": "dataQualityGrade", "type": "nominal"}
+      },
+      "params": [{
+        "name":"brush",
+        "select": {"type": "interval"}
+      }]
+    },
+    {
+      "repeat": ["hospitalizedCumulative", "recovered"],
+      "columns": 1,
+      "spec": {
+        "width": 500,
+        "height": 75,
+        "mark": "bar",
+        "encoding": {
+          "x": {"field": "state", "type": "nominal"},
+          "y": {
+            "field": {"repeat": "repeat"},
+            "type": "quantitative",
+            "axis": {"tickCount": 5}
+          }
+        },
+        "transform": [{
+          "filter":{"param":"brush"}
+        }]
+      }
+    }
+  ],
+  "config": {}
+}
